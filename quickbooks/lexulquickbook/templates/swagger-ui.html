@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Swagger</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js" crossorigin></script>
+    <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-standalone-preset.js" crossorigin></script>
+    <script>
+          window.onload = () => {
+            window.ui = SwaggerUIBundle({
+              url: "{% url schema_url %}",
+              dom_id: '#swagger-ui',
+              presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+              ],
+              layout: "StandaloneLayout",
+              requestInterceptor: (request) => {
+                request.headers['X-CSRFToken'] = "{{ csrf_token }}"
+                return request;
+              }
+            });
+          };
+    // const ui = SwaggerUIBundle({
+    //     url: "{% url schema_url %}",
+    //     dom_id: '#swagger-ui',
+    //     presets: [
+    //       SwaggerUIBundle.presets.apis,
+    //       SwaggerUIBundle.SwaggerUIStandalonePreset
+    //     ],
+    //     layout: "BaseLayout",
+    //     requestInterceptor: (request) => {
+    //       request.headers['X-CSRFToken'] = "{{ csrf_token }}"
+    //       return request;
+    //     }
+    //   })
+    </script>
+  </body>
+</html>

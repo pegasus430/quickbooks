@@ -1,0 +1,10 @@
+db.sqlite3
+__pycache__
+*.swp
+env
+quickbooks/.env
+/.vscode
+.DS_Store
+.env
+Makefile
+/static/error_log.txt

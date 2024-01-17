@@ -1,0 +1,23 @@
+variables:
+    TARGET_IP: 35.193.158.124
+    TARGET_USER: dev
+
+deploy_dev:
+    stage: deploy
+    image: python:3.10.6
+    before_script:
+        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+        - mkdir -p ~/.ssh
+        - eval $(ssh-agent -s)
+        - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        - apt-get update -y && apt-get install rsync -y
+        - echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+        - chmod 600 ~/.ssh/id_rsa
+        - rsync --rsync-path=/usr/bin/rsync -e "ssh -vi ~/.ssh/id_rsa -o StrictHostKeyChecking=no" -rvz --no-perms --omit-dir-times . $DEV_DEPLOY_USERNAME@$TARGET_IP:/var/www/quickbooks.lexul.dev/ --delete --exclude-from=.gitignore
+        - ssh -o StrictHostKeyChecking=no $DEV_DEPLOY_USERNAME@"$TARGET_IP" 'virtualenv -p /usr/local/bin/python3.10 /var/www/quickbooks.lexul.dev/env'
+        - ssh -o StrictHostKeyChecking=no $DEV_DEPLOY_USERNAME@"$TARGET_IP" '/var/www/quickbooks.lexul.dev/env/bin/pip install -r /var/www/quickbooks.lexul.dev/requirements.txt'
+        - ssh -o StrictHostKeyChecking=no $DEV_DEPLOY_USERNAME@"$TARGET_IP" '/var/www/quickbooks.lexul.dev/env/bin/python /var/www/quickbooks.lexul.dev/manage.py collectstatic -c --noinput -v 0'
+        - ssh -o StrictHostKeyChecking=no $DEV_DEPLOY_USERNAME@"$TARGET_IP" '/usr/bin/supervisorctl restart quickbooks.lexul.dev'
+    only:
+        - dev

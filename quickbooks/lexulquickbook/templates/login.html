@@ -1,0 +1,27 @@
+<!DOCTYPE >
+<html>
+<head>
+  {% load static %}
+  <title>Login | QBI</title>
+  <link rel="stylesheet" href = "{% static 'css/common.css' %}"  />
+</head>
+  <body>
+    <div class="login">
+      <div class="login-triangle"></div>
+      
+      <h2 class="login-header">QB Integration APP</h2>
+    
+      <form class="login-container" method="POST" >
+        {% csrf_token %} 
+        <input type="hidden" value="{{ app_url }}" id="app_url">
+        <p><input id="username" placeholder="Username"></p>
+        <p><input id="password" placeholder="Password"></p>
+        <p><input type="button" value="Log in" id="login"></p>
+      </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"></script>
+    <script src="{% static 'js/config.js' %}" ></script>
+    <script src="{% static 'js/login.js' %}" ></script>
+  </body>
+</html>
